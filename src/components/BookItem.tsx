@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
-import Toast from "react-bootstrap/Toast";
-const NewsItem = (props: any) => {
+import { AlertData } from "../types/alertTypes";
+const BookItem = (props: any) => {
   const { title, imgUrl, author, date, bookId, price, tag } = props;
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [alert, setAlert] = useState(false);
+  const [alertData, setAlertData] = useState<AlertData>();
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+  }, [alert]);
   const placeOrder = async () => {
     const userData: string = localStorage.getItem("userData") || "";
     const customerId = JSON.parse(userData).id;
@@ -24,40 +30,33 @@ const NewsItem = (props: any) => {
         status: "confirmed",
       }),
     });
-    // const rdata = await res.json();
+    const alertObj: AlertData = {
+      status: "",
+      message: "",
+    };
+    const rdata = await res.json();
     if (res.status === 200) {
-      <Toast
-        className="d-inline-block m-1"
-        bg={"Success"}
-        style={{ marginTop: 70 }}
-      >
-        <Toast.Header>
-          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-        </Toast.Header>
-        <Toast.Body className={"text-white"}>
-          Order has been placed successfully.
-        </Toast.Body>
-      </Toast>;
+      alertObj.status = "success";
     } else {
-      <Toast className="d-inline-block m-1" bg={"Warning"}>
-        <Toast.Header>
-          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-        </Toast.Header>
-        <Toast.Body className={"text-white"}>
-          Order has not been placed successfully.
-        </Toast.Body>
-      </Toast>;
+      alertObj.status = "danger";
     }
+    alertObj.message = rdata.message;
+    setAlert(true);
+    setAlertData(alertObj);
   };
   return (
     <div>
+      {alert && (
+        <Alert
+          key={alertData && alertData.status}
+          variant={alertData && alertData.status}
+        >
+          {alertData && alertData.message}
+        </Alert>
+      )}
       <div className="card">
         <img
-          src={
-            !imgUrl
-              ? "https://i.gadgets360cdn.com/large/spacex_reuters_1556260807227.JPG"
-              : imgUrl
-          }
+          src={imgUrl}
           className="card-img-top"
           alt="..."
           style={{ height: "170px" }}
@@ -110,4 +109,4 @@ const NewsItem = (props: any) => {
   );
 };
 
-export default NewsItem;
+export default BookItem;

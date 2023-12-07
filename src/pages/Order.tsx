@@ -3,8 +3,9 @@ import { Alert, Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import { AlertData } from "../types/alertTypes";
+import { OrderData } from "../types/orderTypes";
 export default function Order() {
-  const [orders, setOrders] = useState<any>([]);
+  const [orders, setOrders] = useState<OrderData[]>([]);
   const [reload, setReload] = useState(false);
   const [orderId, setOrderId] = useState(0);
   const [show, setShow] = useState(false);
@@ -16,7 +17,7 @@ export default function Order() {
   useEffect(() => {
     setTimeout(() => {
       setAlert(false);
-    }, 5000);
+    }, 3000);
   }, [alert]);
   useEffect(() => {
     const userData: string = localStorage.getItem("userData") || "";
@@ -65,7 +66,7 @@ export default function Order() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: "65px" }}>
+    <div className="container" style={{ marginTop: "85px" }}>
       {alert && (
         <Alert
           key={alertData && alertData.status}
@@ -87,10 +88,10 @@ export default function Order() {
         </thead>
         <tbody>
           {orders &&
-            orders.map((order: any, index: number) => {
+            orders.map((order: OrderData, index: number) => {
               const id: number = order.id;
               return (
-                <tr>
+                <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{order.title}</td>
                   <td>{order.writer}</td>
@@ -135,6 +136,7 @@ export default function Order() {
             variant="primary"
             onClick={async () => {
               handleOrderCancel(orderId);
+              handleClose();
             }}
           >
             Yes

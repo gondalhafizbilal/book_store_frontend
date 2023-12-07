@@ -1,45 +1,30 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
-import News from "./components/News";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import LoadingBar from "react-top-loading-bar";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Order from "./components/Order";
+import Book from "./pages/Book";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Order from "./pages/Order";
 
 const App = () => {
-  const [progress, setprogress] = useState<number>(0);
-  const [localStorage, setLocalStorage] = useState<string>(" ");
-
-  const setProgress = (progress: number) => {
-    setprogress(progress);
-  };
-  const getStorage = (storage: string) => {
-    setLocalStorage(storage);
-  };
-  useEffect(() => {}, [localStorage]);
   return (
     <>
       <Router>
-        {localStorage && <Navbar getStorage={getStorage} />}
-        <LoadingBar height={3} color="#f11946" progress={progress} />
+        <LoadingBar height={3} color="#f11946" />
         <Routes>
           <Route
-            path="/news"
+            path="/books"
             element={
               <ProtectedRoutes>
-                <News
-                  setProgress={setProgress}
-                  key="entertainment"
-                  pageSize={9}
-                  category=""
-                />
+                <Navbar />
+                <Book />
               </ProtectedRoutes>
             }
           />
@@ -47,11 +32,12 @@ const App = () => {
             path="/orders"
             element={
               <ProtectedRoutes>
+                <Navbar />
                 <Order />
               </ProtectedRoutes>
             }
           />
-          <Route path="/" element={<Login getStorage={getStorage} />} />
+          <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Register />} />
         </Routes>
       </Router>

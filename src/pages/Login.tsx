@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AlertData } from "../types/alertTypes";
+import Alert from "react-bootstrap/Alert";
 
-export default function Login(props: any) {
+export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState(false);
+  const [alertData, setAlertData] = useState<AlertData>();
 
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+  }, [alert]);
   const handleLogin = async () => {
     try {
       const response = await fetch(
@@ -21,12 +30,14 @@ export default function Login(props: any) {
       if (response.ok) {
         const { data } = await response.json();
         localStorage.setItem("userData", JSON.stringify(data));
-        const storage = localStorage.getItem("userData");
-        props.getStorage(storage);
-        console.log("Logged in successfully");
-        navigate("/news");
+
+        navigate("/books");
       } else {
-        console.log("Invalid username or password");
+        setAlert(true);
+        setAlertData({
+          status: "danger",
+          message: "Invalid email and password",
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -35,6 +46,14 @@ export default function Login(props: any) {
 
   return (
     <section className="vh-100 gradient-custom">
+      {alert && (
+        <Alert
+          key={alertData && alertData.status}
+          variant={alertData && alertData.status}
+        >
+          {alertData && alertData.message}
+        </Alert>
+      )}
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">

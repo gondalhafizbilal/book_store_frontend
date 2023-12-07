@@ -1,14 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = (props: any) => {
+const Navbar = () => {
   const userName: string = JSON.parse(
     localStorage.getItem("userData") || ""
   ).name;
   const navigate = useNavigate();
   const logOut = () => {
-    const haveItem = localStorage.setItem("userData", "");
-    props.getStorage(haveItem);
+    const haveItem = localStorage.removeItem("userData");
     navigate("/");
   };
   const toOrders = () => {
@@ -29,7 +28,7 @@ const Navbar = (props: any) => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-          <Link className="navbar-brand" to="/news">
+          <Link className="navbar-brand" to="/books">
             {userName}
           </Link>
           <ul className="navbar-nav me-auto mb-2 mb-lg-0"></ul>

@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
+import { AlertData } from "../types/alertTypes";
 
 export default function Register() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState(false);
+  const [alertData, setAlertData] = useState<AlertData>();
 
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+  }, [alert]);
   const handleSignup = async () => {
     try {
       const response = await fetch(
@@ -22,10 +31,19 @@ export default function Register() {
       if (response.ok) {
         await response.json();
         console.log("Your account has been created successfully");
-        alert("Your account has been created successfully.");
+        setAlert(true);
+        setAlertData({
+          status: "success",
+          message: "Your account has been created successfully.",
+        });
+
         navigate("/");
       } else {
-        console.log("Invalid details.");
+        setAlert(true);
+        setAlertData({
+          status: "danger",
+          message: "Invalid Details.",
+        });
       }
     } catch (error) {
       console.error("Sign up error:", error);
@@ -33,6 +51,14 @@ export default function Register() {
   };
   return (
     <section className="vh-100 gradient-custom">
+      {alert && (
+        <Alert
+          key={alertData && alertData.status}
+          variant={alertData && alertData.status}
+        >
+          {alertData && alertData.message}
+        </Alert>
+      )}
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
