@@ -7,7 +7,7 @@ const Navbar = () => {
   ).name;
   const navigate = useNavigate();
   const logOut = () => {
-    const haveItem = localStorage.removeItem("userData");
+    localStorage.removeItem("userData");
     navigate("/");
   };
   const toOrders = () => {
